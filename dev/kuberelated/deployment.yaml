@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki-amd
+spec:
+  selector:
+    matchLabels:
+      app: wiki-amd
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: wiki-amd
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                    - amd64
+      containers:
+      - name: wiki
+        image: <IMAGE>
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: IfNotPresent
